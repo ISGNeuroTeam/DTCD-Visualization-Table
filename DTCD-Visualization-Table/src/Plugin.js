@@ -8,7 +8,7 @@ import {
   StorageSystemAdapter,
 } from './../../DTCD-SDK';
 
-export class VisualizationText extends PanelPlugin {
+export class VisualizationTable extends PanelPlugin {
 
   #dataSourceName;
   #storageSystem;
@@ -92,8 +92,24 @@ export class VisualizationText extends PanelPlugin {
     this.loadData(data);
   }
 
-  setFormSettings() {}
+  setFormSettings(config) {
+    return this.setPluginConfig(config);
+  }
 
-  getFormSettings() {}
+  getFormSettings() {
+    return {
+      fields: [
+        {
+          component: 'datasource',
+          propName: 'dataSource',
+          attrs: {
+            label: 'Выберите источник данных',
+            placeholder: 'Выберите значение',
+            required: true,
+          },
+        },
+      ],
+    };
+  }
 
 }
