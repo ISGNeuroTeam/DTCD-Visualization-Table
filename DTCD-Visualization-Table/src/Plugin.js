@@ -117,11 +117,9 @@ export class VisualizationTable extends PanelPlugin {
   processDataSourceEvent(eventData) {
     const { dataSource, status } = eventData;
     const data = this.#storageSystem.session.getRecord(dataSource);
-
-    console.log(
+    this.#logSystem.debug(
       `${this.#id} process DataSourceStatusUpdate({ dataSource: ${dataSource}, status: ${status} })`
     );
-
     this.loadData(data);
   }
 
