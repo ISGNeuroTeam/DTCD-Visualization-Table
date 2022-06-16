@@ -1,6 +1,10 @@
 <template>
-  <div class="visualization-table-container">
-    <table class="datatable">
+  <div class="VisualizationTable">
+    <div v-if="dataset.length < 1" class="NoData">
+      <span class="FontIcon name_infoCircleOutline Icon"></span>
+      Нет данных для отображения
+    </div>
+    <table v-else class="DataTable">
       <thead>
         <tr>
           <th
@@ -26,31 +30,81 @@
 <script>
 export default {
   name: 'PluginComponent',
-  data: (self) => ({
-    logSystem: self.$root.logSystem,
-    eventSystem: self.$root.eventSystem,
-    headers: [],
+  data: () => ({
     dataset: [],
+    config: {},
   }),
-  mounted() {
-    this.createHeaders();
+  computed: {
+    headers() {
+      return this.dataset.length < 1 ? [] : Object.keys(this.dataset[0]);
+    },
   },
   methods: {
-    render() {
-      this.createHeaders();
+    setConfigProp(prop, value) {
+      this.config[prop] = value;
     },
 
     setDataset(data = []) {
       this.dataset = data;
     },
-
-    createHeaders() {
-      this.headers = this.dataset.length <= 0 ? [] : Object.keys(this.dataset[0]);
-    },
   },
 };
 </script>
 
-<style lang="sass">
-@import ./styles/component
+<style lang="sass" scoped>
+*
+  box-sizing: border-box
+  margin: 0
+  padding: 0
+
+.VisualizationTable
+  width: 100%
+  height: 100%
+  overflow: auto
+  padding: 10px
+  color: var(--text_secondary)
+  font-family: 'Proxima Nova'
+  background-color: var(--background_main)
+
+  .NoData
+    height: 100%
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+
+    .Icon
+      color: var(--border_secondary)
+      font-size: 100px
+      margin-bottom: 8px
+
+  .DataTable
+    width: 100%
+    height: 100%
+    text-align: left
+    border-collapse: collapse
+
+    thead
+      color: var(--title)
+      font-size: 15px
+      font-weight: 700
+
+      tr th
+        height: 40px
+        padding: 0 30px
+        background-color: var(--border_24)
+
+    tbody
+      color: var(--text_main)
+
+      tr
+        height: 30px
+        font-size: 13px
+        line-height: 16px
+
+        td
+          padding: 10px 30px
+
+        &:nth-child(even)
+          background-color: var(--border_24)
 </style>
