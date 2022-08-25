@@ -22,6 +22,7 @@ export class VisualizationTable extends PanelPlugin {
 
   #config = {
     dataSource: '',
+    title: '',
   }
 
   static getRegistrationMeta() {
@@ -137,6 +138,13 @@ export class VisualizationTable extends PanelPlugin {
             label: 'Выберите источник данных',
             placeholder: 'Выберите значение',
             required: true,
+          },
+        },
+        {
+          component: 'text',
+          propName: 'title',
+          attrs: {
+            label: 'Заголовок',
           },
         },
       ],
