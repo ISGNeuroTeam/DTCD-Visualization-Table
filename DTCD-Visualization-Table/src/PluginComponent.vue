@@ -1,5 +1,9 @@
 <template>
   <div class="VisualizationTable">
+    <div
+      v-if="config.title"
+      class="title"
+      v-text="config.title"/>
     <div v-if="dataset.length < 1" class="NoData">
       <span class="FontIcon name_infoCircleOutline Icon"></span>
       Нет данных для отображения
@@ -20,6 +24,7 @@
             v-for="(colName, colIndex) in headers"
             :key="`row-${rowIndex}-col-${colIndex}`"
             v-text="row[colName]"
+            :style="getCellStyle(row, colName)"
           />
         </tr>
       </tbody>
@@ -32,11 +37,20 @@ export default {
   name: 'PluginComponent',
   data: () => ({
     dataset: [],
-    config: {},
+    config: {
+      title: null,
+    },
+    hiddenColumns: [
+      'metadata',
+    ],
   }),
   computed: {
     headers() {
-      return this.dataset.length < 1 ? [] : Object.keys(this.dataset[0]);
+      if (this.dataset.length < 1) {
+        return [];
+      }
+      return Object.keys(this.dataset[0])
+        .filter((name) => !this.hiddenColumns.includes(name))
     },
   },
   methods: {
@@ -47,6 +61,39 @@ export default {
     setDataset(data = []) {
       this.dataset = data;
     },
+
+    /**
+     * Генерируем стили для ячейки по метаданным в таблице
+     * metadata = "{'имяЯчейкиВСтроке':{'text_color':'red', ... }, ... }"
+     * @param {Object} row
+     * @param {String} colName
+     * @return {null|{Object}}
+     */
+    getCellStyle(row, colName) {
+      if (row.metadata) {
+        const styles = new Map();
+        const propsToStyles = [
+          ['text_color', 'color'],
+          ['text_weight',  'font-weight'],
+          ['background_color',  'background-color'],
+        ];
+        try {
+          const metadata = JSON.parse(row.metadata.replaceAll("'", '"'));
+          if (metadata.hasOwnProperty(colName)) {
+            const cellMetadata = metadata[colName];
+            propsToStyles.forEach(([key, styleName]) => {
+              if (cellMetadata.hasOwnProperty(key)) {
+                styles.set(styleName, cellMetadata[key])
+              }
+            })
+            return Object.fromEntries(styles);
+          }
+        } catch (err) {
+          console.warn(err)
+        }
+      }
+      return null;
+    }
   },
 };
 </script>
@@ -66,6 +113,13 @@ export default {
   font-family: 'Proxima Nova'
   background-color: var(--background_main)
 
+  .title
+    color: var(--text_main)
+    font-size: 18px
+    font-weight: 700
+    line-height: 25px
+    padding-bottom: 8px
+
   .NoData
     height: 100%
     display: flex
@@ -80,7 +134,6 @@ export default {
 
   .DataTable
     width: 100%
-    height: 100%
     text-align: left
     border-collapse: collapse
 
