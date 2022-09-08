@@ -1,9 +1,9 @@
 <template>
   <div class="VisualizationTable">
     <div
-      v-if="config.title"
+      v-if="title"
       class="title"
-      v-text="config.title"/>
+      v-text="title"/>
     <div v-if="dataset.length < 1" class="NoData">
       <span class="FontIcon name_infoCircleOutline Icon"></span>
       Нет данных для отображения
@@ -37,9 +37,7 @@ export default {
   name: 'PluginComponent',
   data: () => ({
     dataset: [],
-    config: {
-      title: null,
-    },
+    title: '',
     hiddenColumns: [
       'metadata',
     ],
@@ -54,8 +52,8 @@ export default {
     },
   },
   methods: {
-    setConfigProp(prop, value) {
-      this.config[prop] = value;
+    setTitle(value = '') {
+      this.title = value;
     },
 
     setDataset(data = []) {
@@ -110,7 +108,7 @@ export default {
   overflow: auto
   padding: 10px
   color: var(--text_secondary)
-  font-family: 'Proxima Nova'
+  font-family: 'Proxima Nova', sans-serif
   background-color: var(--background_main)
 
   .title

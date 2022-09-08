@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added the ability to change the text color, background and font thickness in the table using metadata
 
+## Changed
+- Refactoring for new SDK version
+
 ## [0.3.0]
 
 ## Added
