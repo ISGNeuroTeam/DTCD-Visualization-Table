@@ -32,7 +32,7 @@ export default {
   name: 'PluginComponent',
   data: () => ({
     dataset: [],
-    config: {},
+    title: '',
   }),
   computed: {
     headers() {
@@ -40,8 +40,8 @@ export default {
     },
   },
   methods: {
-    setConfigProp(prop, value) {
-      this.config[prop] = value;
+    setTitle(value = '') {
+      this.title = value;
     },
 
     setDataset(data = []) {
@@ -63,7 +63,7 @@ export default {
   overflow: auto
   padding: 10px
   color: var(--text_secondary)
-  font-family: 'Proxima Nova'
+  font-family: 'Proxima Nova', sans-serif
   background-color: var(--background_main)
 
   .NoData
