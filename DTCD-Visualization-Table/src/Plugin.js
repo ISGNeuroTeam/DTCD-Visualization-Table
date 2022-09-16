@@ -21,6 +21,7 @@ export class VisualizationTable extends PanelPlugin {
   #vueComponent;
 
   #config = {
+    ...this.defaultConfig,
     dataSource: '',
   }
 
@@ -55,6 +56,15 @@ export class VisualizationTable extends PanelPlugin {
     this.#logSystem.info(`${this.#id} initialization complete`);
   }
 
+  setVueComponentPropValue(prop, value) {
+    const methodName = `set${prop.charAt(0).toUpperCase() + prop.slice(1)}`;
+    if (this.#vueComponent[methodName]) {
+      this.#vueComponent[methodName](value)
+    } else {
+      throw new Error(`В компоненте отсутствует метод ${methodName} для присвоения свойства ${prop}`)
+    }
+  }
+
   setPluginConfig(config = {}) {
     this.#logSystem.debug(`Set new config to ${this.#id}`);
     this.#logSystem.info(`Set new config to ${this.#id}`);
@@ -64,32 +74,34 @@ export class VisualizationTable extends PanelPlugin {
     for (const [prop, value] of Object.entries(config)) {
       if (!configProps.includes(prop)) continue;
 
-      if (prop === 'dataSource' && value) {
+      if (prop !== 'dataSource') {
+        this.setVueComponentPropValue(prop, value)
+      } else if (value) {
         if (this.#config[prop]) {
           this.#logSystem.debug(
-            `Unsubscribing ${this.#id} from DataSourceStatusUpdate({ dataSource: ${this.#config[prop]}, status: success })`
+              `Unsubscribing ${this.#id} from DataSourceStatusUpdate({ dataSource: ${this.#config[prop]}, status: success })`
           );
           this.#eventSystem.unsubscribe(
-            this.#dataSourceSystemGUID,
-            'DataSourceStatusUpdate',
-            this.#guid,
-            'processDataSourceEvent',
-            { dataSource: this.#config[prop], status: 'success' },
+              this.#dataSourceSystemGUID,
+              'DataSourceStatusUpdate',
+              this.#guid,
+              'processDataSourceEvent',
+              { dataSource: this.#config[prop], status: 'success' },
           );
         }
 
         const dsNewName = value;
 
         this.#logSystem.debug(
-          `Subscribing ${this.#id} for DataSourceStatusUpdate({ dataSource: ${dsNewName}, status: success })`
+            `Subscribing ${this.#id} for DataSourceStatusUpdate({ dataSource: ${dsNewName}, status: success })`
         );
 
         this.#eventSystem.subscribe(
-          this.#dataSourceSystemGUID,
-          'DataSourceStatusUpdate',
-          this.#guid,
-          'processDataSourceEvent',
-          { dataSource: dsNewName, status: 'success' },
+            this.#dataSourceSystemGUID,
+            'DataSourceStatusUpdate',
+            this.#guid,
+            'processDataSourceEvent',
+            { dataSource: dsNewName, status: 'success' },
         );
 
         const ds = this.#dataSourceSystem.getDataSource(dsNewName);
@@ -101,7 +113,6 @@ export class VisualizationTable extends PanelPlugin {
       }
 
       this.#config[prop] = value;
-      this.#vueComponent.setConfigProp(prop, value);
       this.#logSystem.debug(`${this.#id} config prop value "${prop}" set to "${value}"`);
     }
   }
@@ -139,6 +150,7 @@ export class VisualizationTable extends PanelPlugin {
             required: true,
           },
         },
+        ...this.defaultFields,
       ],
     };
   }
