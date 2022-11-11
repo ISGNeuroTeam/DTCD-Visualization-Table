@@ -155,4 +155,13 @@ export class VisualizationTable extends PanelPlugin {
     };
   }
 
+  getState() {
+    return this.getPluginConfig();
+  }
+
+  setState(newState) {
+    if (typeof newState !== 'object' ) return;
+
+    this.setPluginConfig(newState);
+  }
 }
