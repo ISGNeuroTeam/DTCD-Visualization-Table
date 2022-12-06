@@ -115,8 +115,8 @@ export default {
     color: var(--text_main)
     font-size: 18px
     font-weight: 700
-    line-height: 25px
-    padding-bottom: 8px
+    line-height: 1.4
+    padding: 10px
 
   .NoData
     height: 100%
