@@ -116,7 +116,7 @@ export default {
     font-size: 18px
     font-weight: 700
     line-height: 1.4
-    padding: 10px
+    padding-bottom: 10px
 
   .NoData
     height: 100%
