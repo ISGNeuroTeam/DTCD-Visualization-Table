@@ -36,6 +36,7 @@
 export default {
   name: 'PluginComponent',
   data: () => ({
+    schema: {},
     dataset: [],
     title: '',
     hiddenColumns: [
@@ -44,16 +45,20 @@ export default {
   }),
   computed: {
     headers() {
-      if (this.dataset.length < 1) {
+      if (!this.schema) {
         return [];
       }
-      return Object.keys(this.dataset[0])
+      return Object.keys(this.schema)
         .filter((name) => !this.hiddenColumns.includes(name))
     },
   },
   methods: {
     setTitle(value = '') {
       this.title = value;
+    },
+
+    setSchema(schema = {}) {
+      this.schema = schema;
     },
 
     setDataset(data = []) {

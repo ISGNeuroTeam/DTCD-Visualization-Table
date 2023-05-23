@@ -107,6 +107,8 @@ export class VisualizationTable extends PanelPlugin {
         const ds = this.#dataSourceSystem.getDataSource(dsNewName);
 
         if (ds && ds.status === 'success') {
+          const schema = this.#storageSystem.session.getRecord(`${dsNewName}_SCHEMA`)
+          this.loadSchema(schema);
           const data = this.#storageSystem.session.getRecord(dsNewName);
           this.loadData(data);
         }
@@ -121,16 +123,21 @@ export class VisualizationTable extends PanelPlugin {
     return { ...this.#config };
   }
 
+  loadSchema(schema) {
+    this.#vueComponent.setSchema(schema);
+  }
   loadData(data) {
     this.#vueComponent.setDataset(data);
   }
 
   processDataSourceEvent(eventData) {
     const { dataSource, status } = eventData;
+    const schema = this.#storageSystem.session.getRecord(`${dataSource}_SCHEMA`)
     const data = this.#storageSystem.session.getRecord(dataSource);
     this.#logSystem.debug(
       `${this.#id} process DataSourceStatusUpdate({ dataSource: ${dataSource}, status: ${status} })`
     );
+    this.loadSchema(schema);
     this.loadData(data);
   }
 
