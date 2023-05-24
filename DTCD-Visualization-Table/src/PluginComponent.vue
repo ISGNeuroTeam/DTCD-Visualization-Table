@@ -36,6 +36,7 @@
 export default {
   name: 'PluginComponent',
   data: () => ({
+    schema: {},
     dataset: [],
     title: '',
     hiddenColumns: [
@@ -44,16 +45,20 @@ export default {
   }),
   computed: {
     headers() {
-      if (this.dataset.length < 1) {
+      if (!this.schema) {
         return [];
       }
-      return Object.keys(this.dataset[0])
+      return Object.keys(this.schema)
         .filter((name) => !this.hiddenColumns.includes(name))
     },
   },
   methods: {
     setTitle(value = '') {
       this.title = value;
+    },
+
+    setSchema(schema = {}) {
+      this.schema = schema;
     },
 
     setDataset(data = []) {
@@ -115,8 +120,8 @@ export default {
     color: var(--text_main)
     font-size: 18px
     font-weight: 700
-    line-height: 25px
-    padding-bottom: 8px
+    line-height: 1.4
+    padding-bottom: 10px
 
   .NoData
     height: 100%
