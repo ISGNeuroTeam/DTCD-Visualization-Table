@@ -23,7 +23,7 @@
           <td
             v-for="(colName, colIndex) in headers"
             :key="`row-${rowIndex}-col-${colIndex}`"
-            v-text="row[colName]"
+            v-text="formatNumberToLocale(row[colName])"
             :style="getCellStyle(row, colName)"
           />
         </tr>
@@ -33,6 +33,8 @@
 </template>
 
 <script>
+
+import { formatNumberToLocale } from '../../DTCD-SDK/utils/formatting';
 export default {
   name: 'PluginComponent',
   data: () => ({
@@ -96,7 +98,8 @@ export default {
         }
       }
       return null;
-    }
+    },
+    formatNumberToLocale
   },
 };
 </script>
